@@ -1,17 +1,15 @@
 # Docker image for Jenkins Operations Center
 
-FROM apemberton/jenkins-base
-MAINTAINER Andy Pemberton <apemberton@cloudbees.com>
+FROM kmadel/jenkins-base:1.0
+MAINTAINER Kurt Madel <kmadel@cloudbees.com>
 
 # Download jenkins-oc.war
 USER jenkins
 WORKDIR /usr/lib/jenkins
-RUN curl -L -O -w "Downloaded: %{url_effective}\\n" "http://nectar-downloads.cloudbees.com/jenkins-operations-center/1.580/war/1.580.13.1/jenkins-oc.war"
+RUN curl -L -O -w "Downloaded: %{url_effective}\\n" "http://nectar-downloads.cloudbees.com/cjoc/1.609/war/1.609.1.1/jenkins-oc.war"
 
-EXPOSE 8080 22
+EXPOSE 8080 22 4001
 ENV JENKINS_HOME /var/lib/jenkins
 
-ENTRYPOINT ["java", "-jar", "jenkins-oc.war", "--httpPort=8080"]
+ENTRYPOINT ["java", "-jar", "-Dcom.cloudbees.opscenter.server.model.SharedCloud.ALLOW_UNSUPPORTED_CLOUDS=true", "jenkins-oc.war", "--httpPort=8080"]
 CMD ["--prefix=/operations-center"]
-
-# CMD ["java", "-jar", "jenkins-oc.war", "--httpPort=8080", "--prefix=/operations-center"]
